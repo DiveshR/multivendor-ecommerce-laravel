@@ -8,10 +8,22 @@ use App\Http\Controllers\Admin\{
 Route::group(
     [
         'prefix' => 'admin',
-        'middleware' => ['auth','role:admin'],
+        // 'middleware' => ['auth','role:admin'],
         'as' => 'admin.'
     ],
     function () {
-        Route::get('dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
+
+        Route::view('login','admin.login');
+        Route::middleware(
+            [
+                'auth', 'role:admin',
+            ]
+        )
+            ->group(
+                function () {
+                    Route::get('dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
+                    Route::get('admin/logout', [AdminController::class, 'destroy'])->name('logout');
+                }
+            );
     }
 );
